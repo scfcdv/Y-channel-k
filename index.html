@@ -1,0 +1,32 @@
+<link rel="icon" href="https://scfcdv.github.io/homeweb2/favicon.ico">
+<title>YouTubeチャンネル検索</title>
+<input type="text" id="searchInput" placeholder="チャンネルのキーワード">
+<button onclick="searchChannels()">検索</button>
+<div id="results"></div>
+<script>
+const apiKey = 'AIzaSyAR6IuGP-2cvhGWEBm9p3yedmAF2AdI2-M';
+function searchChannels() {
+const searchInput = document.getElementById('searchInput').value;
+const url = `https://www.googleapis.com/youtube/v3/search?key=${apiKey}&q=${searchInput}&type=channel&part=snippet`;
+fetch(url)
+.then(response => response.json())
+.then(data => {
+const resultsDiv = document.getElementById('results');
+resultsDiv.innerHTML = ''; // 結果をリセット
+if (data.items) {
+data.items.forEach(item => {
+const channelId = item.id.channelId;
+const channelTitle = item.snippet.title;
+const channelThumbnail = item.snippet.thumbnails.default.url;
+const channelDiv = document.createElement('div');
+channelDiv.innerHTML = `
+<h2>${channelTitle}</h2>
+<img src="${channelThumbnail}" alt="${channelTitle}">
+<p>Channel ID: ${channelId}</p>
+`;
+resultsDiv.appendChild(channelDiv);});
+} else {
+resultsDiv.innerHTML = 'No results found.';}})
+.catch(error => {
+console.error('Error:', error);});}
+</script>
